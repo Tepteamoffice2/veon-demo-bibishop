@@ -1,0 +1,58 @@
+---
+// 9 catalogue sections as a parts organiser («каса»): unequal cells parted by 1px graphite lines, no pictures, no counters.
+import FutureLink from "./FutureLink.astro";
+import { categories, NOTE_SOON } from "../data/site";
+---
+<section id="categories" class="section section--band cats" data-rec="R-006" aria-labelledby="cats-title">
+  <div class="container">
+    <div class="section__head">
+      <h2 id="cats-title">Дев'ять вузлів авто — дев'ять розділів каталогу</h2>
+    </div>
+    <ul class="cats__grid">
+      {categories.map((c) => (
+        <li class="cats__cell" style={`--span:${c.span}`}>
+          <FutureLink note={NOTE_SOON} class="cats__link">
+            <span class="cats__name">{c.name}</span>
+          </FutureLink>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cats__grid {
+    display: grid; grid-template-columns: minmax(0, 1fr);
+    border-top: var(--line) solid var(--color-rule);
+  }
+  .cats__cell { border-bottom: var(--line) solid var(--color-rule); min-width: 0; }
+  .cats__cell :global(.cats__link) {
+    display: flex; align-items: center; width: 100%; min-height: 4.5rem; padding: var(--space-2) 0;
+    transition: background-color var(--dur-short) var(--ease-out);
+  }
+  .cats__name { font: 500 var(--text-h3)/1.15 var(--font-display); font-stretch: 75%; overflow-wrap: break-word; min-width: 0; }
+  .cats__cell :global(.cats__link:focus-visible) { outline-offset: -3px; box-shadow: none; }
+  .cats__cell :global(.future-link__note) { left: auto; right: 0; top: 50%; transform: translateY(-50%); }
+  .cats__cell :global(.cats__link:hover .future-link__note),
+  .cats__cell :global(.cats__link:focus .future-link__note) { transform: translateY(-50%); }
+  @media (hover: hover) {
+    .cats__cell :global(.cats__link:hover) { background: var(--color-surface); }
+  }
+
+  @media (min-width: 40rem) {
+    .cats__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); border-left: var(--line) solid var(--color-rule); }
+    .cats__cell { border-right: var(--line) solid var(--color-rule); }
+    .cats__cell :global(.cats__link) { align-items: flex-end; min-height: 8rem; padding: var(--space-3); }
+    .cats__cell :global(.future-link__note) { top: var(--space-2); right: var(--space-2); transform: translateY(-4px); }
+    .cats__cell :global(.cats__link:hover .future-link__note),
+    .cats__cell :global(.cats__link:focus .future-link__note) { transform: none; }
+    .cats__cell:last-child { grid-column: 1 / -1; }
+  }
+  @media (min-width: 60rem) {
+    .cats__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .cats__cell { grid-column: span var(--span); }
+    .cats__cell:last-child { grid-column: span var(--span); }
+    .cats__cell :global(.cats__link) { min-height: 10rem; padding: var(--space-4); }
+    .cats__name { font-size: var(--text-code); line-height: 1.05; }
+  }
+</style>

@@ -1,0 +1,71 @@
+---
+// Address large, all four phones, Viber with its number, e-mail, map by address, contact-centre hours (decisions.md: branch hours not shown until confirmed).
+import Icon from "./Icon.astro";
+import { address, phones, viber, email, schedule } from "../data/site";
+---
+<section id="contacts" class="section contacts" data-rec="R-012" aria-labelledby="contacts-title">
+  <div class="container contacts__grid">
+    <div class="contacts__place">
+      <h2 id="contacts-title">{address.street} — приїжджайте або пишіть</h2>
+      <p class="contacts__city">{address.city}, {address.postal}. Самовивіз безкоштовно.</p>
+      <a class="link contacts__map" href={address.mapHref} target="_blank" rel="noopener"><Icon name="map" />Відкрити на карті</a>
+
+      <div class="hours">
+        <h3 class="hours__title">Контакт-центр</h3>
+        <dl class="hours__list">
+          {schedule.map((s) => (
+            <div class="hours__row">
+              <dt>{s.days}</dt>
+              <dd class="num">{s.hours}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+
+    <div class="contacts__reach">
+      <ul class="contacts__phones" data-rec="R-005">
+        {phones.map((p) => (
+          <li><a class="num" href={`tel:${p.e164}`}><Icon name="phone" />{p.label}</a></li>
+        ))}
+      </ul>
+      <a class="btn contacts__viber" href={viber.href} data-rec="R-004"><Icon name="viber" />Viber <span class="num">{viber.label}</span></a>
+      <a class="contacts__mail" href={`mailto:${email}`}><Icon name="mail" />{email}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contacts__grid { display: grid; gap: var(--space-5); }
+  .contacts__place { display: grid; gap: var(--space-3); align-content: start; }
+  .contacts__place h2 { max-width: 20ch; }
+  .contacts__city { font-size: var(--text-lead); }
+  .contacts__map { display: inline-flex; align-items: center; gap: var(--space-1); justify-self: start; min-height: var(--tap); font-weight: 600; }
+
+  .hours { display: grid; gap: var(--space-2); margin-top: var(--space-3); }
+  .hours__title { font-size: var(--text-lead); font-family: var(--font-body); font-weight: 600; font-stretch: 100%; }
+  .hours__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; border-top: var(--line-strong) solid var(--color-text); }
+  .hours__row { display: grid; gap: var(--space-1); padding: var(--space-2) var(--space-1) 0 0; }
+  .hours__row + .hours__row { padding-left: var(--space-1); border-left: var(--line) solid var(--color-rule-quiet); }
+  .hours__row dt { font-size: var(--text-small); color: var(--color-text-muted); }
+  .hours__row dd { margin: 0; font-weight: 600; white-space: nowrap; }
+
+  .contacts__reach { display: grid; gap: var(--space-3); align-content: start; }
+  .contacts__phones { border-top: var(--line) solid var(--color-rule-quiet); }
+  .contacts__phones li { border-bottom: var(--line) solid var(--color-rule-quiet); }
+  .contacts__phones a {
+    display: flex; align-items: center; gap: var(--space-2); min-height: var(--btn-h);
+    font: 600 var(--text-large-ui)/1.2 var(--font-body); text-decoration: none; white-space: nowrap;
+    transition: color var(--dur-short) var(--ease-out);
+  }
+  @media (hover: hover) { .contacts__phones a:hover { color: var(--color-accent); } }
+  .contacts__viber { width: 100%; }
+  .contacts__mail { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); font-weight: 500; color: var(--color-accent); text-underline-offset: 3px; overflow-wrap: anywhere; }
+
+  @media (min-width: 60rem) {
+    .contacts__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-3); }
+    .contacts__place { grid-column: 1 / span 7; }
+    .contacts__reach { grid-column: 8 / span 5; }
+    .contacts__phones a { font-size: var(--text-phone); }
+  }
+</style>

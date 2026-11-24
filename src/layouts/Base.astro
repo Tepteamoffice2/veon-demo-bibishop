@@ -1,0 +1,39 @@
+---
+import "../styles/tokens.css";
+import "../styles/global.css";
+
+interface Props { lang: string; title: string; description: string; canonical?: string; }
+const { lang, title, description, canonical } = Astro.props;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <script is:inline>document.documentElement.classList.add("js")</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="uk_UA" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#FFFFFF" />
+    <link rel="icon" href="/logo-bibishop.svg" type="image/svg+xml" />
+    <!-- Only the main face is preloaded: Tektur (cyrillic) sets the H1 -->
+    <link rel="preload" href="/fonts/tektur-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+    <slot name="head" />
+    <style is:global>
+      /* Floor 34, repeated here so the layout carries it on its own (global.css has the same rule) */
+      html, body { overflow-x: clip; }
+    </style>
+  </head>
+  <body id="top" data-rec="R-019,R-020,R-060">
+    <a class="skip-link" href="#main">{lang.startsWith("uk") ? "До змісту" : lang.startsWith("ru") ? "К содержанию" : "Skip to content"}</a>
+    <slot name="header" />
+    <main id="main"><slot /></main>
+    <slot name="footer" />
+    <script src="../scripts/reveal.ts"></script>
+    <script src="../scripts/future-notes.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+---
+// BiBiShop homepage — design/concept.md «Від VIN до артикула». Sections in veon-concept order:
+// hero, makes, categories, brands, delivery, contacts.
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Makes from "../components/Makes.astro";
+import Categories from "../components/Categories.astro";
+import Brands from "../components/Brands.astro";
+import Delivery from "../components/Delivery.astro";
+import Contacts from "../components/Contacts.astro";
+import Footer from "../components/Footer.astro";
+import StickyBar from "../components/StickyBar.astro";
+import { address, phones, email } from "../data/site";
+
+const H1 = "Запчастини для іномарок — підберемо за VIN";
+const title = "Запчастини для іномарок у Києві — підбір за VIN | BiBiShop";
+const description =
+  "BiBiShop — оригінальні та аналогові запчастини для іномарок. Підбір за VIN, відправка Новою Поштою в день замовлення, Київ — за 2 години.";
+
+// No url and no openingHours: the demo does not point at the current site, branch hours await confirmation.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AutoPartsStore",
+  name: "BiBiShop",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: address.street,
+    addressLocality: address.city,
+    postalCode: address.postal,
+    addressCountry: "UA",
+  },
+  telephone: phones.map((p) => p.e164),
+  email,
+};
+---
+<Base lang="uk" title={title} description={description}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <Header slot="header" />
+  <Hero h1={H1} />
+  <Makes />
+  <Categories />
+  <Brands />
+  <Delivery />
+  <Contacts />
+  <Footer slot="footer" />
+  <StickyBar slot="footer" />
+</Base>

@@ -1,0 +1,93 @@
+---
+// The part's route: facts B-F003, B-F009, B-F010, B-F011, B-F012 only. Courier price in Kyiv is not shown (R-015).
+import { address } from "../data/site";
+const stops = [
+  { fig: "до 15:00", text: "замовлення до 15:00 зазвичай відправляємо Новою Поштою того ж дня" },
+  { fig: "від 80 грн", text: "Нова Пошта: відділення чи поштомат, 1 робочий день, іноді 2–3" },
+  { fig: "2 години", text: "кур'єр по Києву, 9:00–18:00, за наявності; вартість уточнюйте" },
+  { fig: "0 грн", text: `самовивіз: ${address.short}` },
+  { fig: "14 днів", text: "на повернення чи обмін: чек, оригінальна упаковка, без слідів використання" },
+];
+const pay = [
+  { title: "Накладений платіж", text: "комісія 2% + 20 грн" },
+  { title: "Часткова передоплата", text: "100 грн" },
+  { title: "Рахунок ФОП", text: "безготівковий переказ" },
+  { title: "Готівка", text: "у Києві" },
+];
+---
+<section id="delivery" class="section delivery" data-rec="R-002" aria-labelledby="delivery-title">
+  <div class="container">
+    <div class="section__head">
+      <h2 id="delivery-title">Від повідомлення у Viber до деталі у вас</h2>
+    </div>
+
+    <div class="route" data-reveal>
+      <span class="route__line" aria-hidden="true"></span>
+      <ol class="route__stops">
+        {stops.map((s) => (
+          <li class="stop">
+            <h3 class="stop__fig num">{s.fig}</h3>
+            <p class="stop__text">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+    <p class="delivery__note">Укрпошта — лише з повною передоплатою.</p>
+
+    <div class="pay">
+      <h3 class="pay__title">Як оплатити</h3>
+      <dl class="pay__list">
+        {pay.map((p) => (
+          <div class="pay__item">
+            <dt>{p.title}</dt>
+            <dd>{p.text}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Phone: a vertical route on the left */
+  .route { position: relative; padding-left: var(--space-4); }
+  .route__line {
+    position: absolute; left: 0.375rem; top: var(--space-1); bottom: var(--space-1); width: 4px;
+    background: var(--color-field); transform-origin: top;
+  }
+  .route__stops { display: grid; gap: var(--space-4); }
+  .stop { position: relative; display: grid; gap: var(--space-1); }
+  .stop::before {
+    content: ""; position: absolute; left: calc(-1 * var(--space-4)); top: 0.5rem;
+    width: 1rem; height: 1rem; background: var(--color-bg); border: 4px solid var(--color-field);
+  }
+  .stop__fig { font: 500 var(--text-code)/1 var(--font-display); font-stretch: 75%; white-space: nowrap; }
+  .stop__text { max-width: 30ch; }
+  .delivery__note { margin-top: var(--space-4); color: var(--color-text-muted); }
+
+  .pay { margin-top: var(--space-6); display: grid; gap: var(--space-3); }
+  .pay__title { font-weight: 600; }
+  .pay__list { display: grid; margin: 0; border-top: var(--line) solid var(--color-rule-quiet); }
+  .pay__item { display: grid; gap: var(--space-1); padding: var(--space-2) 0; border-bottom: var(--line) solid var(--color-rule-quiet); }
+  .pay__item dt { font-weight: 600; font-size: var(--text-lead); }
+  .pay__item dd { margin: 0; color: var(--color-text-muted); }
+
+  @media (min-width: 60rem) {
+    /* Desktop: a horizontal crimson line with five stops */
+    .route { padding-left: 0; padding-top: var(--space-5); }
+    .route__line { left: 0; right: 0; top: 0.375rem; bottom: auto; width: auto; height: 4px; transform-origin: left; }
+    .route__stops { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-3); }
+    .stop::before { left: 0; top: calc(-1 * var(--space-5)); }
+    .pay { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-3); align-items: start; }
+    .pay__title { grid-column: 1 / span 3; }
+    .pay__list { grid-column: 4 / span 9; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 0; border-bottom: 0; }
+    .pay__item { padding: 0 var(--space-3); border-bottom: 0; border-left: var(--line) solid var(--color-rule-quiet); }
+  }
+
+  /* Motion 3: the route draws from Viber to "у вас" once, when it enters the view */
+  :global(.js) .route__line { transition: transform var(--dur-long) var(--ease-out); }
+  :global(.js) .route:not(.is-visible) .route__line { transform: scaleY(0); }
+  @media (max-width: 59.99rem) { :global(.js) .route__line { transition-duration: 600ms; } }
+  @media (min-width: 60rem) { :global(.js) .route:not(.is-visible) .route__line { transform: scaleX(0); } }
+  @media (prefers-reduced-motion: reduce) { :global(.js) .route:not(.is-visible) .route__line { transform: none; } }
+</style>

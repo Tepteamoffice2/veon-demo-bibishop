@@ -1,0 +1,110 @@
+---
+// 30 makes as text (no logo wall). Choosing a make is real (highlight + hint); model/year selection is a future page.
+import FutureLink from "./FutureLink.astro";
+import Icon from "./Icon.astro";
+import { makes, makesMobileVisible, viber, NOTE_SOON } from "../data/site";
+---
+<section id="makes" class="section makes" data-rec="R-006" aria-labelledby="makes-title">
+  <div class="container">
+    <div class="section__head makes__head">
+      <h2 id="makes-title">Немає VIN під рукою? Почніть з марки</h2>
+    </div>
+
+    <ul class="makes__grid" id="makes-grid" data-makes>
+      {makes.map((make, i) => (
+        <li class:list={["makes__item", { "is-extra": i >= makesMobileVisible }]}>
+          <button class="makes__btn" type="button" aria-pressed="false" data-make={make}>{make}</button>
+        </li>
+      ))}
+    </ul>
+
+    <div class="makes__more">
+      <button class="btn btn--outline makes__toggle" type="button" aria-expanded="false" aria-controls="makes-grid" data-makes-toggle>Показати всі 30</button>
+      <FutureLink note={NOTE_SOON} class="makes__all">Ще 26 марок</FutureLink>
+    </div>
+
+    <div class="makes__answer" data-makes-answer>
+      <p class="makes__hint" role="status" aria-live="polite">
+        <span data-makes-picked>Оберіть марку.</span>
+        Підбір за моделлю й роком запрацює в повній версії сайту — а зараз надішліть VIN або марку, модель і рік у Viber.
+      </p>
+      <div class="makes__actions">
+        <a class="btn" href={viber.href}><Icon name="viber" />Написати у Viber</a>
+        <FutureLink note="Підбір за моделлю й роком запрацює в повній версії сайту" class="makes__future">Обрати модель і рік</FutureLink>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const grid = document.querySelector<HTMLElement>("[data-makes]");
+  const picked = document.querySelector<HTMLElement>("[data-makes-picked]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-makes-toggle]");
+  grid?.addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-make]");
+    if (!btn) return;
+    const already = btn.getAttribute("aria-pressed") === "true";
+    grid.querySelectorAll("[data-make]").forEach((b) => b.setAttribute("aria-pressed", "false"));
+    btn.setAttribute("aria-pressed", already ? "false" : "true");
+    if (picked) picked.textContent = already ? "Оберіть марку." : `Обрано: ${btn.dataset.make}.`;
+  });
+  // Phones: 12 makes, then all 30 on request (instant, no height animation).
+  toggle?.addEventListener("click", () => {
+    const open = toggle.getAttribute("aria-expanded") !== "true";
+    toggle.setAttribute("aria-expanded", String(open));
+    grid?.classList.toggle("is-open", open);
+    toggle.textContent = open ? "Згорнути марки" : "Показати всі 30";
+  });
+</script>
+
+<style>
+  .makes__grid {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: var(--line) solid var(--color-rule-quiet);
+    border-left: var(--line) solid var(--color-rule-quiet);
+  }
+  .makes__item { border-right: var(--line) solid var(--color-rule-quiet); border-bottom: var(--line) solid var(--color-rule-quiet); }
+  :global(.js) .makes__grid:not(.is-open) .is-extra { display: none; }
+  .makes__btn {
+    position: relative; display: flex; align-items: center; width: 100%; min-height: var(--btn-h);
+    padding: 0 var(--space-2); border: 0; background: var(--color-bg); color: var(--color-text);
+    font: 500 var(--text-make)/1.2 var(--font-body); text-align: left; cursor: pointer;
+    transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+  }
+  /* Hover: crimson bottom edge grows from the left (transform only) */
+  .makes__btn::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--color-field);
+    transform: scaleX(0); transform-origin: left; transition: transform var(--dur-short) var(--ease-out);
+  }
+  @media (hover: hover) { .makes__btn:hover::after { transform: scaleX(1); } }
+  .makes__btn:active { transform: scale(.98); }
+  .makes__btn:focus-visible { outline-offset: -3px; box-shadow: none; z-index: 1; }
+  /* Chosen make = what the visitor gives: crimson field, white 19px/600 (large-bold, 4.12:1) */
+  .makes__btn[aria-pressed="true"] { background: var(--color-field); color: var(--color-on-field); font-weight: 700; }
+  .makes__btn[aria-pressed="true"]::after { transform: scaleX(0); }
+
+  .makes__more { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); margin-top: var(--space-2); }
+  .makes__toggle { width: 100%; }
+  :global(html:not(.js)) .makes__toggle { display: none; }
+  .makes__all { font-weight: 500; text-decoration: underline; text-decoration-color: var(--color-rule-quiet); text-underline-offset: 3px; min-height: var(--tap); }
+
+  .makes__answer { display: grid; gap: var(--space-3); margin-top: var(--space-4); padding-top: var(--space-3); border-top: var(--line-strong) solid var(--color-text); }
+  .makes__hint { max-width: 60ch; }
+  .makes__hint span { font-weight: 600; }
+  .makes__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+  .makes__future { font-weight: 500; color: var(--color-text-muted); min-height: var(--tap); }
+
+  @media (min-width: 40rem) {
+    .makes__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    :global(.js) .makes__grid:not(.is-open) .is-extra { display: block; }
+    .makes__toggle { display: none; }
+  }
+  @media (min-width: 60rem) {
+    .makes__grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .makes__btn { padding: 0 var(--space-3); }
+    .makes__more { justify-content: flex-end; }
+    .makes__answer { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-3); align-items: center; }
+    .makes__hint { grid-column: 1 / span 7; }
+    .makes__actions { grid-column: 8 / span 5; justify-content: flex-end; }
+  }
+</style>

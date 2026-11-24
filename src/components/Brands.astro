@@ -1,0 +1,97 @@
+---
+// Part makers (left) and the shop's answer (right): 3 real catalogue items, article set large. No price, no stock.
+import { Picture } from "astro:assets";
+import FutureLink from "./FutureLink.astro";
+import { brands, products, NOTE_SOON } from "../data/site";
+import kp45669xs from "../assets/products/kp45669xs.webp";
+import ina422006410 from "../assets/products/422006410.webp";
+import frenkit254936 from "../assets/products/254936.webp";
+
+const images = { kp45669xs, "422006410": ina422006410, "254936": frenkit254936 } as const;
+---
+<section id="brands" class="section section--band brands" aria-labelledby="brands-title">
+  <div class="container brands__grid">
+    <div class="brands__side">
+      <h2 id="brands-title">Оригінал чи аналог — у каталозі є обидва</h2>
+      <ul class="brands__list" aria-label="Популярні виробники">
+        {brands.map((b) => (
+          <li><FutureLink note={NOTE_SOON} class="brands__name">{b}</FutureLink></li>
+        ))}
+      </ul>
+      <FutureLink note={NOTE_SOON} class="brands__all">Усі бренди</FutureLink>
+    </div>
+
+    <div class="brands__answer">
+      <ul class="items">
+        {products.map((p) => (
+          <li class="item">
+            <Picture
+              src={images[p.image]}
+              formats={["avif", "webp"]}
+              fallbackFormat="webp"
+              widths={[240, 360, 480, 600].filter((w) => w <= images[p.image].width)}
+              sizes="(min-width: 60rem) 220px, (min-width: 40rem) 30vw, 128px"
+              alt={`${p.name} ${p.brand} ${p.article}`}
+              loading="lazy"
+              decoding="async"
+              class="item__img"
+            />
+            <div class="item__text">
+              <p class="item__brand">{p.brand}</p>
+              <p class="item__article num">{p.article}</p>
+              <p class="item__name">{p.name}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <div class="search">
+        <FutureLink note="Пошук запрацює в повній версії сайту" class="search__field">
+          <span class="search__label">Пошук за артикулом</span>
+          <span class="search__sample num">напр. KP45669XS</span>
+        </FutureLink>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .brands { background: var(--color-surface); }
+  .brands__grid { display: grid; gap: var(--space-5); }
+  .brands__side { display: grid; gap: var(--space-4); align-content: start; }
+  .brands__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-1) var(--space-3); }
+  .brands__list :global(.brands__name) {
+    font: 500 var(--text-h3)/1.1 var(--font-display); font-stretch: 75%;
+    min-height: var(--tap); transition: color var(--dur-short) var(--ease-out);
+  }
+  @media (hover: hover) { .brands__list :global(.brands__name:hover) { color: var(--color-accent); } }
+  .brands__side :global(.brands__all) { justify-self: start; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; min-height: var(--tap); }
+
+  .items { display: grid; gap: var(--space-3); }
+  .item { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: var(--space-2); align-items: center; }
+  .item :global(.item__img) { width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; background: var(--color-bg); border-radius: var(--radius); }
+  .item__text { display: grid; gap: var(--space-1); min-width: 0; }
+  .item__brand { font-weight: 600; font-size: var(--text-small); }
+  .item__article { font: 500 var(--text-code)/1 var(--font-display); font-stretch: 75%; overflow-wrap: anywhere; }
+  .item__name { font-size: var(--text-small); color: var(--color-text-muted); }
+
+  .search { margin-top: var(--space-4); }
+  .search :global(.search__field) {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);
+    width: 100%; min-height: var(--btn-h); padding: 0 var(--space-2);
+    background: var(--color-bg); border: var(--line) solid var(--color-text); border-radius: var(--radius);
+  }
+  .search__label { font-weight: 500; }
+  .search__sample { color: var(--color-text-muted); font-size: var(--text-small); white-space: nowrap; }
+
+  @media (min-width: 40rem) {
+    .items { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
+    .item { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  }
+  @media (min-width: 60rem) {
+    .brands__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-3); }
+    .brands__side { grid-column: 1 / span 5; }
+    .brands__answer { grid-column: 6 / span 7; padding-top: var(--space-1); }
+    .brands__list { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .brands__list :global(.brands__name) { font-size: var(--text-code); font-weight: 600; min-height: 3.25rem; }
+  }
+</style>

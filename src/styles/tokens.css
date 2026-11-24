@@ -1,0 +1,89 @@
+/* Hallmark · shape: custom (counter hero, then index of makes and catalogue, then a route) · genre: editorial · theme: custom · job: buy · idea: "Від VIN до артикула: BiBiShop перекладає код вашого авто в код потрібної деталі і везе її до вас" · vibe: "technical, plain-spoken, fast, light, code-stamped" · paper: #FFFFFF with steel #E6E9EB bands · accent: #EE2C4D field, #C41E3D text · display: Tektur · body: Geologica · hero: counter, the H1 over a full-bleed crimson band with a 17-cell VIN row and the Viber action · nav: edge-aligned bar, full phone with a disclosure and a Viber button, burger under 75rem · footer: steel colophon block with wordmark, legal line, contacts and future pages · imagery: the product (3 real catalogue photos) · signature: the crimson 17-cell VIN row that copies your VIN and opens the manager in Viber
+ * axes: light/condensed-sans/chromatic-red · posture: committed · surface: absolute · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H5 E4 S5 R4 V4 · weakest: P, a parts shop has little to argue; the page argues "send the code, not the guesswork" through the VIN row and the route instead of slogans */
+/* Hallmark · waive 7b · --color-bg and --color-on-field are #FFFFFF · concept.md (approved palette, veon-concept colors): white is the paper of the BiBiShop logo (B-F018), steel #E6E9EB carries the tinted bands */
+
+/* Client design tokens: ONLY from design/concept.md (veon-concept: colors, fonts). */
+:root {
+  /* Colour roles (concept.md § Дизайн-система для FULL) */
+  --color-bg: #FFFFFF;          /* paper */
+  --color-surface: #E6E9EB;     /* steel: dense bands, footer */
+  --color-text: #232020;        /* graphite: logo outline */
+  --color-text-muted: #5A5F63;  /* secondary text */
+  --color-field: #EE2C4D;       /* crimson field: what the visitor gives (VIN row, chosen make, route) */
+  --color-accent: #C41E3D;      /* links, small accent text */
+  --color-on-field: #FFFFFF;    /* only large text and UI on the field */
+  --color-rule: #232020;        /* 1px lines of the catalogue «каса» */
+  --color-rule-quiet: #C9CED2;  /* decorative dividers only */
+  --color-focus: #232020;       /* 3px ring + 2px paper gap */
+
+  /* Type */
+  --font-display: "Tektur", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Geologica", system-ui, sans-serif;
+  --text-h1: clamp(2.25rem, 0.9rem + 5.4vw, 5.5rem);      /* 36 → 88 */
+  --text-h2: clamp(1.875rem, 1.2rem + 3vw, 3.5rem);       /* 30 → 56 */
+  --text-code: clamp(1.5rem, 1rem + 2vw, 2.5rem);         /* 24 → 40: VIN, articles, route figures */
+  --text-h3: clamp(1.5rem, 1.25rem + 0.9vw, 2rem);        /* 24 → 32 */
+  --text-lead: clamp(1.0625rem, 0.95rem + 0.55vw, 1.25rem); /* 17 → 20 */
+  --text-body: clamp(1.0625rem, 1.02rem + 0.1vw, 1.125rem); /* 17 → 18 */
+  --text-large-ui: 1.25rem;     /* 20px/700: the only size white text takes on the field */
+  --text-make: 1.1875rem;       /* 19: make cells; chosen = white 700 on the field (large-bold) */
+  --text-phone: 1.375rem;       /* 22: phone rows in contacts */
+  --text-menu: 1.75rem;         /* 28: menu anchors, Tektur */
+  --text-small: clamp(0.875rem, 0.84rem + 0.1vw, 0.9375rem); /* 14 → 15 */
+  --lh-tight: 0.95;
+  --lh-head: 1.05;
+  --lh-body: 1.55;
+
+  /* Space: 8-step rhythm (8/16/24/32/48/72/120) */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4.5rem;
+  --space-7: 7.5rem;
+  --space: var(--gutter);
+  --gutter: 1rem;
+  --section-gap: var(--space-6);
+  --container: 1280px;
+
+  /* Chrome */
+  --header-h: 56px;
+  --header-h-compact: 56px;
+  --tap: 44px;
+  --btn-h: 56px;
+  --radius: 2px;
+  --line: 1px;
+  --line-strong: 2px;
+  --ring: 3px;
+  --vin-cell-w: 4rem;   /* 64 */
+  --vin-cell-h: 5rem;   /* 80 */
+  --vin-gap: 0.25rem;
+  --z-sticky: 200;
+  --z-nav: 300;
+  --z-menu: 400;
+  --z-tip: 600;
+
+  /* Motion (concept.md § Движение) */
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-in: cubic-bezier(.5, 0, .75, 0);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 200ms;
+  --dur-state: 280ms;
+  --dur-bar: 240ms;
+  --dur-long: 900ms;
+  --dur: 600ms;
+  --stagger-vin: 30ms;
+}
+
+@media (min-width: 40rem) {
+  :root { --gutter: 2rem; }
+}
+@media (min-width: 60rem) {
+  :root { --gutter: 3rem; --section-gap: var(--space-7); --btn-h: 52px; --header-h: 80px; --header-h-compact: 64px; }
+}
+@media (min-width: 90rem) {
+  :root { --gutter: 5rem; }
+}

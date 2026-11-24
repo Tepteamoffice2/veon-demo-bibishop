@@ -1,0 +1,60 @@
+---
+// Steel colophon footer: wordmark, legal line, address, real channels, future pages as FutureLink.
+import FutureLink from "./FutureLink.astro";
+import { address, mainPhone, viber, email, legalName, futurePages, NOTE_SOON } from "../data/site";
+---
+<footer class="ftr">
+  <div class="container ftr__grid">
+    <div class="ftr__brand">
+      <a class="ftr__logo" href="#top" aria-label="BiBiShop, на початок сторінки">
+        <img src="/logo-bibishop.svg" width="754" height="423" alt="" decoding="async" />
+      </a>
+      <p>Інтернет-магазин запчастин для іномарок.</p>
+      <p class="ftr__legal">{legalName}, {address.city}, {address.street}.</p>
+    </div>
+
+    <ul class="ftr__contacts">
+      <li><a class="num" href={`tel:${mainPhone.e164}`}>{mainPhone.label}</a></li>
+      <li><a href={viber.href} data-rec="R-004">Viber <span class="num">{viber.label}</span></a></li>
+      <li><a href={`mailto:${email}`}>{email}</a></li>
+    </ul>
+
+    <nav class="ftr__pages" aria-label="Сторінки повної версії сайту">
+      <ul>
+        {futurePages.map((p) => <li><FutureLink note={NOTE_SOON}>{p}</FutureLink></li>)}
+      </ul>
+    </nav>
+  </div>
+  <div class="container ftr__base">
+    <p>© BiBiShop</p>
+    <FutureLink note={NOTE_SOON} class="ftr__lang">Російська версія</FutureLink>
+  </div>
+</footer>
+
+<style>
+  .ftr { background: var(--color-surface); padding-block: var(--space-6) var(--space-4); }
+  .ftr__grid { display: grid; gap: var(--space-4); }
+  .ftr__brand { display: grid; gap: var(--space-2); align-content: start; }
+  .ftr__logo { justify-self: start; }
+  .ftr__logo img { height: 3.5rem; width: auto; }
+  .ftr__legal { color: var(--color-text-muted); font-size: var(--text-small); }
+  .ftr__contacts, .ftr__pages ul { display: grid; gap: var(--space-1); align-content: start; }
+  .ftr__contacts a { display: inline-flex; align-items: center; column-gap: var(--space-1); min-height: var(--tap); font-weight: 600; text-decoration: none; }
+  @media (hover: hover) { .ftr__contacts a:hover { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; } }
+  .ftr__pages :global(.future-link) { min-height: var(--tap); }
+  .ftr__base {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2);
+    margin-top: var(--space-5); padding-top: var(--space-2); border-top: var(--line) solid var(--color-rule-quiet);
+    font-size: var(--text-small); color: var(--color-text-muted);
+  }
+  .ftr__base :global(.ftr__lang) { min-height: var(--tap); }
+  .ftr__base :global(.ftr__lang .future-link__note) { top: auto; bottom: calc(100% + var(--space-1)); }
+  .ftr__pages :global(.future-link__note) { top: auto; bottom: calc(100% + var(--space-1)); }
+
+  @media (min-width: 60rem) {
+    .ftr__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-3); }
+    .ftr__brand { grid-column: 1 / span 5; }
+    .ftr__contacts { grid-column: 7 / span 3; }
+    .ftr__pages { grid-column: 10 / span 3; }
+  }
+</style>

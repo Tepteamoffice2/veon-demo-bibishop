@@ -1,0 +1,167 @@
+---
+import Icon from "./Icon.astro";
+import { nav, phones, mainPhone, viber, email } from "../data/site";
+const others = phones.slice(1);
+---
+<header class="hdr" data-header>
+  <div class="container hdr__bar">
+    <a class="hdr__logo" href="#top" aria-label="BiBiShop, на початок сторінки">
+      <img src="/logo-bibishop.svg" width="754" height="423" alt="" />
+    </a>
+
+    <nav class="hdr__nav" aria-label="Розділи сторінки">
+      <ul>
+        {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="hdr__contact">
+      <div class="phones" data-rec="R-005">
+        <a class="phones__main num" href={`tel:${mainPhone.e164}`}>{mainPhone.label}</a>
+        <details class="phones__more" data-phones>
+          <summary aria-label="Інші номери телефону">
+            <Icon name="chevron" />
+          </summary>
+          <ul class="phones__list">
+            {others.map((p) => (
+              <li><a class="num" href={`tel:${p.e164}`}>{p.label}</a></li>
+            ))}
+            <li class="phones__viber"><a href={viber.href}><Icon name="viber" /><span>Viber <span class="num">{viber.label}</span></span></a></li>
+          </ul>
+        </details>
+      </div>
+      <a class="btn hdr__viber" href={viber.href} data-rec="R-004">
+        <Icon name="viber" />Viber
+      </a>
+    </div>
+
+    <div class="hdr__icons">
+      <a class="hdr__icon" href={`tel:${mainPhone.e164}`} aria-label={`Подзвонити ${mainPhone.label}`}><Icon name="phone" /></a>
+      <a class="hdr__icon" href={viber.href} aria-label={`Написати у Viber ${viber.label}`}><Icon name="viber" /></a>
+    </div>
+    <button class="hdr__icon hdr__burger" type="button" aria-label="Відкрити меню" aria-haspopup="dialog" aria-expanded="false" aria-controls="menu" data-menu-open>
+      <Icon name="menu" />
+    </button>
+  </div>
+</header>
+
+<dialog id="menu" class="menu" aria-label="Меню">
+  <div class="menu__top container">
+    <a class="hdr__logo" href="#top" aria-label="BiBiShop, на початок сторінки" data-menu-link>
+      <img src="/logo-bibishop.svg" width="754" height="423" alt="" />
+    </a>
+    <button class="hdr__icon" type="button" aria-label="Закрити меню" data-menu-close><Icon name="close" /></button>
+  </div>
+  <div class="menu__body container">
+    <nav aria-label="Розділи сторінки">
+      <ul class="menu__nav">
+        {nav.map((item) => <li><a href={item.href} data-menu-link>{item.label}</a></li>)}
+      </ul>
+    </nav>
+    <div class="menu__contacts">
+      <ul class="menu__phones">
+        {phones.map((p) => <li><a class="num" href={`tel:${p.e164}`}><Icon name="phone" />{p.label}</a></li>)}
+      </ul>
+      <a class="btn menu__viber" href={viber.href}><Icon name="viber" />Viber <span class="num">{viber.label}</span></a>
+      <a class="link" href={`mailto:${email}`}>{email}</a>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  import "../scripts/header";
+</script>
+
+<style>
+  .hdr {
+    position: fixed; inset: 0 0 auto 0; z-index: var(--z-nav);
+    background: var(--color-bg);
+    border-bottom: var(--line) solid transparent;
+  }
+  :global(.hdr.is-compact) { border-bottom-color: var(--color-rule-quiet); }
+  .hdr__bar { display: flex; align-items: center; gap: var(--space-2); height: var(--header-h); }
+  :global(.hdr.is-compact) .hdr__bar { height: var(--header-h-compact); }
+  .hdr__logo { display: block; flex-shrink: 0; margin-right: auto; }
+  .hdr__logo img { height: 2.375rem; width: auto; }
+  @media (min-width: 60rem) {
+    .hdr__logo img { height: 3rem; }
+    :global(.hdr.is-compact) .hdr__logo img { height: 2.5rem; }
+  }
+
+  .hdr__nav { display: none; }
+  .hdr__nav ul { display: flex; gap: var(--space-4); }
+  .hdr__nav a {
+    display: inline-flex; align-items: center; min-height: var(--tap);
+    font-weight: 500; font-size: var(--text-body); text-decoration: none; white-space: nowrap;
+    text-decoration-thickness: var(--line); text-underline-offset: var(--space-1);
+    transition: color var(--dur-short) var(--ease-out);
+  }
+  @media (hover: hover) { .hdr__nav a:hover { color: var(--color-accent); text-decoration-line: underline; } }
+
+  .hdr__contact { display: none; align-items: center; gap: var(--space-3); }
+  .phones { position: relative; display: flex; align-items: center; }
+  .phones__main { font-weight: 600; font-size: var(--text-body); text-decoration: none; white-space: nowrap; padding-block: var(--space-1); }
+  @media (hover: hover) { .phones__main:hover { color: var(--color-accent); } }
+  .phones__more summary {
+    list-style: none; display: grid; place-items: center; width: var(--tap); height: var(--tap); cursor: pointer; border-radius: var(--radius);
+    transition: background-color var(--dur-short) var(--ease-out);
+  }
+  .phones__more summary::-webkit-details-marker { display: none; }
+  @media (hover: hover) { .phones__more summary:hover { background: var(--color-surface); } }
+  .phones__more summary .icon { transition: transform var(--dur-short) var(--ease-out); }
+  .phones__more[open] summary .icon { transform: rotate(180deg); }
+  .phones__list {
+    position: absolute; right: 0; top: calc(100% + var(--space-1)); min-width: 17rem;
+    display: grid; padding: var(--space-1) 0; background: var(--color-bg);
+    border: var(--line) solid var(--color-text); border-radius: var(--radius);
+  }
+  .phones__list a {
+    display: flex; align-items: center; gap: var(--space-1); min-height: var(--tap); padding: 0 var(--space-2);
+    font-weight: 600; text-decoration: none; white-space: nowrap;
+  }
+  @media (hover: hover) { .phones__list a:hover { background: var(--color-surface); } }
+  .phones__viber { border-top: var(--line) solid var(--color-rule-quiet); margin-top: var(--space-1); padding-top: var(--space-1); }
+  .phones__viber a { font-weight: 500; }
+
+  .hdr__icons { display: flex; gap: var(--space-1); }
+  .hdr__icon {
+    display: grid; place-items: center; width: var(--tap); height: var(--tap); flex-shrink: 0;
+    border: 0; background: transparent; color: var(--color-text); border-radius: var(--radius); cursor: pointer;
+    transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+  }
+  .hdr__icon:active { transform: scale(.96); }
+  @media (hover: hover) { .hdr__icon:hover { background: var(--color-surface); } }
+
+  @media (min-width: 40rem) {
+    .hdr__contact { display: flex; }
+    .hdr__icons { display: none; }
+  }
+  @media (min-width: 75rem) {
+    .hdr__bar { gap: var(--space-4); }
+    .hdr__nav { display: block; }
+    .hdr__burger { display: none; }
+    .hdr__logo { margin-right: var(--space-2); }
+    .hdr__contact { margin-left: auto; }
+  }
+  .hdr__viber { min-height: var(--tap); padding-inline: var(--space-2); }
+
+  /* Full-screen menu (phone and tablet) */
+  .menu {
+    width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; padding: 0; border: 0;
+    background: var(--color-bg); color: var(--color-text);
+  }
+  .menu::backdrop { background: var(--color-bg); }
+  .menu[open] { display: flex; flex-direction: column; }
+  .menu__top { display: flex; align-items: center; justify-content: space-between; height: var(--header-h); flex-shrink: 0; }
+  .menu__body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-5); padding-block: var(--space-4) var(--space-5); overflow-y: auto; }
+  .menu__nav { display: grid; gap: var(--space-1); }
+  .menu__nav a {
+    display: flex; align-items: center; min-height: var(--btn-h);
+    font: 600 var(--text-menu)/1.1 var(--font-display); font-stretch: 75%; text-decoration: none;
+    border-bottom: var(--line) solid var(--color-rule-quiet);
+  }
+  .menu__contacts { display: grid; gap: var(--space-2); }
+  .menu__phones { display: grid; }
+  .menu__phones a { display: flex; align-items: center; gap: var(--space-2); min-height: var(--btn-h); font-size: var(--text-large-ui); font-weight: 600; text-decoration: none; }
+  .menu__viber { width: 100%; }
+</style>

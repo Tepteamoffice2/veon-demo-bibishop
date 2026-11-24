@@ -1,0 +1,26 @@
+---
+// Phones only: two actions on any scroll position once the hero buttons are gone (R-003). Shown by scripts/header.ts.
+import Icon from "./Icon.astro";
+import { mainPhone, viber } from "../data/site";
+---
+<div class="sbar" data-sticky-bar data-rec="R-003" inert>
+  <a class="btn btn--outline sbar__btn" href={`tel:${mainPhone.e164}`}><Icon name="phone" />Подзвонити</a>
+  <a class="btn sbar__btn" href={viber.href}><Icon name="viber" />Viber</a>
+</div>
+
+<style>
+  .sbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-sticky);
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-1);
+    padding: var(--space-1) var(--gutter) calc(var(--space-1) + env(safe-area-inset-bottom));
+    background: var(--color-bg); border-top: var(--line) solid var(--color-rule-quiet);
+    transform: translateY(110%);
+    transition: transform var(--dur-bar) var(--ease-out);
+  }
+  .sbar__btn { width: 100%; padding-inline: var(--space-2); }
+  .sbar.is-shown { transform: none; }
+  :global(html:not(.js)) .sbar { display: none; }
+  @media (max-width: 39.99rem) { :global(html.js body) { padding-bottom: calc(var(--btn-h) + var(--space-2)); } }
+  @media (min-width: 40rem) { .sbar { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .sbar { transition: none; } }
+</style>

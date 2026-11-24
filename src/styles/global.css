@@ -1,0 +1,140 @@
+/* Base for BiBiShop: fonts, reset, accessibility, shared controls. Values only through tokens.css. */
+
+html, body { overflow-x: clip; }
+
+/* Self-hosted variable fonts (OFL, public/fonts): latin + cyrillic subsets, Ukrainian letters included. */
+@font-face {
+  font-family: "Tektur";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 900;
+  font-stretch: 75% 100%;
+  src: url("/fonts/tektur-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Tektur";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 900;
+  font-stretch: 75% 100%;
+  src: url("/fonts/tektur-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Geologica";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/geologica-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Geologica";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/geologica-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: var(--header-h); }
+body {
+  margin: 0;
+  padding-top: var(--header-h);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--color-text); color: var(--color-bg); }
+html { scrollbar-color: var(--color-text-muted) var(--color-surface); }
+img, video, svg { display: block; max-width: 100%; height: auto; }
+h1, h2, h3 { margin: 0; overflow-wrap: break-word; min-width: 0; text-wrap: balance; font-family: var(--font-display); font-stretch: 75%; font-weight: 600; letter-spacing: 0; }
+h1 { font-size: var(--text-h1); line-height: var(--lh-tight); }
+h2 { font-size: var(--text-h2); line-height: var(--lh-head); max-width: 24ch; }
+h3 { font-size: var(--text-h3); line-height: 1.1; font-weight: 500; }
+p { margin: 0; text-wrap: pretty; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+.num { font-variant-numeric: lining-nums tabular-nums; }
+
+/* Links: accent text, 1px underline 3px below */
+.link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: var(--line);
+  text-underline-offset: 3px;
+  transition: text-decoration-thickness var(--dur-short) var(--ease-out);
+}
+@media (hover: hover) { .link:hover { text-decoration-thickness: var(--line-strong); } }
+
+/* Focus: 3px graphite ring + 2px paper gap, instant, visible on white, steel and crimson */
+:focus-visible { outline: var(--ring) solid var(--color-focus); outline-offset: 2px; box-shadow: 0 0 0 2px var(--color-bg); }
+
+.skip-link { position: absolute; left: var(--space-2); top: -100px; z-index: var(--z-tip); padding: var(--space-1) var(--space-2); background: var(--color-text); color: var(--color-bg); font-weight: 600; }
+.skip-link:focus { top: var(--space-2); }
+.container { width: min(100% - 2 * var(--gutter), var(--container)); margin-inline: auto; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.section { padding-top: var(--section-gap); }
+.section:last-child, .section--band { padding-bottom: var(--section-gap); }
+.section__head { display: grid; gap: var(--space-2); margin-bottom: var(--space-5); }
+.section__lead { font-size: var(--text-lead); color: var(--color-text-muted); max-width: 46ch; }
+
+/* Buttons: graphite primary, outline secondary; radius 2px echoes Tektur's chamfers */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-1);
+  min-height: var(--btn-h); padding: 0 var(--space-3);
+  border: var(--line-strong) solid var(--color-text); border-radius: var(--radius);
+  background: var(--color-text); color: var(--color-bg);
+  font: 600 var(--text-body)/1.1 var(--font-body);
+  white-space: nowrap; text-decoration: none; cursor: pointer;
+  transition: transform var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+}
+.btn svg { flex-shrink: 0; width: 1.5rem; height: 1.5rem; }
+@media (hover: hover) { .btn:hover { transform: translateY(-1px); } }
+.btn:active { transform: scale(.98); }
+.btn--outline { background: transparent; color: var(--color-text); }
+@media (hover: hover) { .btn--outline:hover { background: var(--color-surface); } }
+/* On the crimson field: white outline, white text only at 20px/700 (large text, 4.12:1) */
+.btn--on-field { background: transparent; border-color: var(--color-on-field); color: var(--color-on-field); font-size: var(--text-large-ui); font-weight: 700; }
+@media (hover: hover) { .btn--on-field:hover { background: var(--color-on-field); color: var(--color-text); } }
+
+/* Disabled and future states: never a dead grey, always the element's own colour with a note */
+.btn:disabled, .btn[aria-disabled="true"] { opacity: .55; cursor: not-allowed; transform: none; }
+.future-link[aria-disabled="true"] { cursor: default; }
+
+/* Line icons, 1.5px graphite (currentColor) */
+.icon { width: 1.5rem; height: 1.5rem; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* FutureLink: a future page. Full colour, default cursor, a note on hover, focus and tap. */
+.future-link { position: relative; display: inline-flex; align-items: center; cursor: default; -webkit-tap-highlight-color: transparent; }
+.future-link__note[aria-hidden="true"] {
+  position: absolute; left: 0; top: calc(100% + var(--space-1));
+  white-space: normal; width: max-content; max-width: min(18rem, calc(100vw - 2 * var(--gutter))); padding: var(--space-1) var(--space-2);
+  font: 500 var(--text-small)/1.2 var(--font-body); letter-spacing: 0; text-transform: none;
+  background: var(--color-text); color: var(--color-bg); border-radius: var(--radius);
+  opacity: 0; transform: translateY(-4px); pointer-events: none; z-index: var(--z-tip);
+  transition: opacity var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out);
+}
+.future-link:hover .future-link__note,
+.future-link:focus .future-link__note,
+.future-link:focus-visible .future-link__note { opacity: 1; transform: none; }
+@media (hover: hover) { .future-link:hover .future-link__note { transition-delay: 300ms; } }
+
+/* Set by scripts/future-notes.ts when a note would leave the screen */
+.future-link .future-link__note.is-flip-right { left: auto; right: 0; }
+.future-link .future-link__note.is-flip-left { left: 0; right: auto; }
+
+/* Reveal hook (src/scripts/reveal.ts): the effect is defined per element; nothing hides by default. */
+[id] { scroll-margin-top: var(--header-h); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0ms !important; }
+}

@@ -1,0 +1,152 @@
+---
+// First screen: H1 + the crimson VIN row. The field sends nothing: the button copies the VIN and opens the real Viber chat (decisions.md).
+import Icon from "./Icon.astro";
+import { mainPhone, viber } from "../data/site";
+interface Props { h1: string; }
+const { h1 } = Astro.props;
+const cells = Array.from({ length: 17 }, (_, i) => i + 1);
+// Keep the dash on the first line (Ukrainian typography): the word before it and the dash never part. Text stays exactly h1.
+const dash = h1.indexOf(" — ");
+const before = dash > 0 ? h1.slice(0, h1.lastIndexOf(" ", dash - 1) + 1) : h1;
+const glued = dash > 0 ? h1.slice(before.length, dash + 2) : "";
+const after = dash > 0 ? h1.slice(dash + 2) : "";
+---
+<section id="hero" class="hero" data-rec="R-001,S-GR005,S-MR004">
+  <div class="container hero__head">
+    <h1 data-rec="R-018">{before}<span class="nowrap">{glued}</span>{after}</h1>
+    <p class="hero__lead">Оригінали й аналоги. Менеджер підбере деталь і перевірить сумісність.</p>
+  </div>
+
+  <div class="vinband" data-rec="R-003,S-R011">
+    <div class="container vinband__inner">
+      <label class="vinband__label" for="vin">Ваш VIN — 17 знаків</label>
+      <div class="vin" data-vin>
+        <input
+          id="vin" name="vin" class="vin__input" type="text"
+          maxlength="17" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" inputmode="text"
+          aria-describedby="vin-hint vin-status"
+        />
+        <div class="vin__cells" aria-hidden="true">
+          {cells.map((n) => (
+            <span class="vin__cell" style={`--i:${n - 1}`}>
+              <span class="vin__char"></span>
+              <span class="vin__pos num">{n}</span>
+            </span>
+          ))}
+        </div>
+      </div>
+      <div class="vinband__row" data-hero-actions>
+        <a class="btn vinband__go" href={viber.href} data-vin-go data-rec="R-003,R-004">
+          <Icon name="copy" />
+          <span class="only-wide">Скопіювати VIN і відкрити Viber</span>
+          <span class="only-narrow">Скопіювати VIN у Viber</span>
+        </a>
+        <a class="btn btn--on-field" href={`tel:${mainPhone.e164}`} data-rec="R-003,R-005">
+          <Icon name="phone" />
+          <span class="only-wide num">{mainPhone.label}</span>
+          <span class="only-narrow">Подзвонити</span>
+        </a>
+        <p class="vinband__status" id="vin-status" role="status" aria-live="polite" data-vin-status></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <p class="hero__hint" id="vin-hint">VIN є у свідоцтві про реєстрацію (техпаспорті). Немає VIN — напишіть у Viber марку, модель і рік.</p>
+  </div>
+</section>
+
+<script>
+  import "../scripts/vin";
+</script>
+
+<style>
+  .hero { padding-top: var(--space-3); }
+  .hero__head { display: grid; gap: var(--space-2); }
+  .hero__lead { font-size: var(--text-lead); max-width: 40ch; }
+  .nowrap { white-space: nowrap; }
+
+  .vinband { margin-top: var(--space-4); background: var(--color-field); color: var(--color-on-field); padding-block: var(--space-3); }
+  .vinband__inner { display: grid; gap: var(--space-2); }
+  .vinband__label { font: 700 var(--text-large-ui)/1.2 var(--font-body); }
+
+  /* The VIN row: one real input over 17 mirrored cells */
+  .vin { position: relative; container-type: inline-size; }
+  .vin__input {
+    position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;
+    opacity: 0; cursor: text; font-size: 16px; border: 0; padding: 0;
+  }
+  .vin__cells {
+    display: grid; grid-template-columns: repeat(17, minmax(0, 1fr));
+    height: 4rem; background: var(--color-bg); color: var(--color-text); border-radius: var(--radius);
+    transition: box-shadow var(--dur-state) var(--ease-out);
+  }
+  .vin__cell { position: relative; display: grid; place-items: center; min-width: 0; }
+  .vin__cell::after {
+    content: ""; position: absolute; right: 0; bottom: 0; width: var(--line); height: 0.75rem; background: var(--color-text-muted);
+  }
+  .vin__cell:last-child::after { display: none; }
+  .vin__char { font: 500 min(var(--text-code), 5.2cqi)/1 var(--font-display); font-stretch: 75%; }
+  .vin__pos { display: none; }
+  .vin__cell.is-bad .vin__char { color: var(--color-accent); text-decoration: underline; text-decoration-thickness: var(--line-strong); text-underline-offset: 4px; }
+  .vin__cell.is-next::before {
+    content: ""; position: absolute; left: 20%; right: 20%; bottom: var(--space-1); height: 3px; background: var(--color-field);
+  }
+  .vin:focus-within .vin__cells { outline: var(--ring) solid var(--color-focus); outline-offset: 4px; }
+  :global(.vin.is-complete) .vin__cells { box-shadow: inset 0 0 0 var(--ring) var(--color-text); }
+
+  /* Without scripting: the plain field is visible and usable */
+  :global(html:not(.js)) .vin__cells { display: none; }
+  :global(html:not(.js)) .vin__input {
+    position: static; opacity: 1; height: 4rem; padding: 0 var(--space-2);
+    background: var(--color-bg); color: var(--color-text); border-radius: var(--radius);
+    font: 500 var(--text-code)/1 var(--font-display);
+  }
+
+  .vinband__row { display: grid; gap: var(--space-1); margin-top: var(--space-1); }
+  .vinband__row .btn { width: 100%; }
+  .vinband__go { border-color: var(--color-text); }
+  .vinband__status { min-height: 1.3em; font: 700 var(--text-large-ui)/1.3 var(--font-body); }
+  .vinband__status:empty { min-height: 0; }
+  .only-wide { display: none; }
+
+  .hero__hint { margin-top: var(--space-2); font-size: var(--text-small); color: var(--color-text-muted); max-width: 60ch; }
+
+  @media (min-width: 40rem) {
+    .only-wide { display: inline; }
+    .only-narrow { display: none; }
+    .vinband__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+    .vinband__row .btn { width: auto; }
+    .vinband__status { flex: 1 1 16rem; }
+    .vinband__status:empty { min-height: 1.3em; }
+  }
+
+  @media (min-width: 60rem) {
+    .hero { padding-top: var(--space-5); }
+    .hero__head { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-3); row-gap: var(--space-3); }
+    .hero__head h1 { grid-column: 1 / span 9; text-wrap: balance; }
+    .hero__head .hero__lead { grid-column: 1 / span 7; }
+    .vinband { margin-top: var(--space-5); padding-block: var(--space-4); }
+    .vinband__inner { gap: var(--space-3); }
+    .vinband__label { font-size: 1.5rem; }
+    /* Desktop: 17 separate white cells 64×80 with the position number inside */
+    .vin__cells {
+      grid-template-columns: repeat(17, minmax(0, var(--vin-cell-w)));
+      gap: var(--vin-gap); height: auto; background: transparent;
+    }
+    .vin__cell { aspect-ratio: 4 / 5; background: var(--color-bg); border-radius: var(--radius); }
+    .vin__cell::after { display: none; }
+    .vin__char { font-size: min(var(--text-code), 3.4cqi); }
+    .vin__pos { display: block; position: absolute; left: var(--space-1); top: 0.375rem; font: 500 0.75rem/1 var(--font-body); color: var(--color-text-muted); }
+    :global(.vin.is-complete) .vin__cells { box-shadow: none; }
+    :global(.vin.is-complete) .vin__cell { box-shadow: inset 0 0 0 var(--ring) var(--color-text); }
+    .vin__cell { transition: box-shadow var(--dur-state) var(--ease-out); }
+    .vinband__row { margin-top: 0; }
+  }
+
+  /* Motion 1: the 17 cells settle left to right once on load (from a visible default; scripting only) */
+  :global(.js) .vin__cell { animation: vin-in var(--dur-short) var(--ease-out) both; animation-delay: calc(var(--i) * var(--stagger-vin)); }
+  @keyframes vin-in { from { opacity: 0; transform: translateY(8px); } }
+  @media (max-width: 39.99rem) { :global(.js) .vin__cell { animation-delay: calc(var(--i) * 18ms); } }
+  @media (prefers-reduced-motion: reduce) { :global(.js) .vin__cell { animation: none; } }
+</style>
