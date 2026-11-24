@@ -2,12 +2,13 @@
 // Steel colophon footer: wordmark, legal line, address, real channels, future pages as FutureLink.
 import FutureLink from "./FutureLink.astro";
 import { address, mainPhone, viber, email, legalName, futurePages, NOTE_SOON } from "../data/site";
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 ---
 <footer class="ftr">
   <div class="container ftr__grid">
     <div class="ftr__brand">
       <a class="ftr__logo" href="#top" aria-label="BiBiShop, на початок сторінки">
-        <img src="/logo-bibishop.svg" width="754" height="423" alt="" decoding="async" />
+        <img src={`${base}logo-bibishop.svg`} width="754" height="423" alt="" decoding="async" />
       </a>
       <p>Інтернет-магазин запчастин для іномарок.</p>
       <p class="ftr__legal">{legalName}, {address.city}, {address.street}.</p>
